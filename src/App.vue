@@ -1,14 +1,20 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const selectedKeys = ref(['1'])
 
-// 根据当前路由更新选中的菜单项
-if (route.path === '/monitoring') {
-  selectedKeys.value = ['2']
-}
+// 监听路由变化，更新选中的菜单项
+watch(() => route.path, (path) => {
+  if (path === '/') {
+    selectedKeys.value = ['1']
+  } else if (path === '/monitoring') {
+    selectedKeys.value = ['2']
+  } else if (path === '/record') {
+    selectedKeys.value = ['3']
+  }
+}, { immediate: true })
 
 </script>
 
@@ -27,26 +33,26 @@ if (route.path === '/monitoring') {
           class="menu"
         >
           <a-menu-item key="1">
-            <router-link to="/">人员关系网</router-link>
+            <router-link to="/">总览</router-link>
           </a-menu-item>
           <a-menu-item key="2">
-            <router-link to="/monitoring">人员监测</router-link>
+            <router-link to="/monitoring">人员监控</router-link>
           </a-menu-item>
           <a-menu-item key="3">
-            <router-link to="/dialog">语音对话</router-link>
+            <router-link to="/record">检测记录</router-link>
           </a-menu-item>
         </a-menu>
       </div>
     </a-layout-header>
-    <a-layout-content style="padding: 20px 50px" >
+    <a-layout-content style="padding: 20px 50px">
       <div :style="{ background: '#fff', padding: '24px', minHeight: 'calc(100vh - 64px - 70px)' }">
-        <RouterView/>
+        <RouterView />
       </div>
     </a-layout-content>
   </a-layout>
   <a-layout-footer style="text-align: center">
-      邑州监狱情感识别项目 ©2018 Created by 电子科技大学xxx实验室
-    </a-layout-footer>
+    邑州监狱情感识别项目 ©2018 Created by 电子科技大学xxx实验室
+  </a-layout-footer>
 </template>
 
 <style scoped>
@@ -62,10 +68,11 @@ if (route.path === '/monitoring') {
 
 .header-content {
   padding: 0 50px;
+  display: flex;
+  align-items: center;
 }
 
 .logo-container {
-  float: left;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -85,6 +92,7 @@ if (route.path === '/monitoring') {
 
 .menu {
   line-height: 64px;
+  flex: 1;
 }
 
 .ant-row-rtl #components-layout-demo-top .logo {
@@ -95,5 +103,4 @@ if (route.path === '/monitoring') {
 [data-theme='dark'] .site-layout-content {
   background: #141414;
 }
-
 </style>

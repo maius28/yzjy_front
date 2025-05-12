@@ -1,25 +1,47 @@
 <template>
-  <div id="dialogue" class="card">
-    <DiaList ref="diaListRef" :messages="messages"/>
-    <div style="padding-left: 5px;">
-      <el-form label-position="top">
-        <el-form-item ref="audioRefs" :key="index" :label="audio.label" v-for="(audio, index) in audioList">
-          <WaveSurfer :audio-url=audio.url :regions="messages"
-          @play="handlePlay(index)"
-          @region-in="handleRegionIn"
-          :ref="(el) => setWaveSurferRef(el as InstanceType<typeof WaveSurfer>, index)" />
-        </el-form-item>
-      </el-form>
+  <div class="dialogue-container">
+    <div class="dialogue-header">
+      <div class="person-info">
+        <span>姓名：{{ personInfo?.name }}</span>
+        <span>编号：{{ personInfo?.id }}</span>
+      </div>
+    </div>
+    
+    <div class="dialogue-content">
+      <DiaList ref="diaListRef" :messages="messages"/>
+      <div style="padding-left: 5px;">
+        <el-form label-position="top">
+          <el-form-item ref="audioRefs" :key="index" :label="audio.label" v-for="(audio, index) in audioList">
+            <WaveSurfer :audio-url=audio.url :regions="messages"
+            @play="handlePlay(index)"
+            @region-in="handleRegionIn"
+            :ref="(el) => setWaveSurferRef(el as InstanceType<typeof WaveSurfer>, index)" />
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+
+    <div class="dialogue-footer">
+      <a-button type="primary" @click="$emit('close')">关闭</a-button>
     </div>
   </div>
 </template>
 
-<script setup lang="tsx">
-import { ref, computed, toRef } from 'vue'
+<script lang="ts" setup>
+import { ref, computed, toRef, defineProps, defineEmits } from 'vue'
 import DiaList from './components/DiaList.vue';
 import WaveSurfer from '@/components/WaveSurfer.vue';
 import { isNumber } from '@/utils/is';
 import{FormItemInstance}from "element-plus";
+
+const props = defineProps({
+  personInfo: {
+    type: Object,
+    required: true
+  }
+});
+
+defineEmits(['close']);
 
 const parseTimeToSeconds=(timeStr: string|number): number=> {
   if(isNumber(timeStr))return timeStr;
@@ -121,13 +143,33 @@ const handleRegionIn=(region:{start:number,end:number})=>{
 }
 
 </script>
-<style scoped lang="scss">
-#dialogue{
-  display: flex;
-  height: 500px;
-  &>div{
-    flex: 1;
 
-  }
+<style scoped>
+.dialogue-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialogue-header {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.person-info {
+  display: flex;
+  gap: 24px;
+}
+
+.dialogue-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.dialogue-footer {
+  padding: 16px;
+  border-top: 1px solid #f0f0f0;
+  text-align: right;
 }
 </style>

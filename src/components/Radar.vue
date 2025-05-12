@@ -6,7 +6,7 @@ let chart;
 const container = ref(null);
 
 onMounted(() => {
-    chart = renderBarChart(container.value);
+    chart = renderRadarChart(container.value);
 });
 
 function onClick() {
@@ -14,37 +14,25 @@ function onClick() {
 }
 
 //渲染条形图
-function renderBarChart(container) {
+function renderRadarChart(container) {
     const chart = new Chart({
         container,
+        height: 400,
+        autoFit: false,
     });
 
     // 准备数据
     const data = [
-        { item: 'Design', type: 'a', score: 70 },
-        { item: 'Design', type: 'b', score: 30 },
-        { item: 'Development', type: 'a', score: 60 },
-        { item: 'Development', type: 'b', score: 70 },
-        { item: 'Marketing', type: 'a', score: 50 },
-        { item: 'Marketing', type: 'b', score: 60 },
-        { item: 'Users', type: 'a', score: 40 },
-        { item: 'Users', type: 'b', score: 50 },
-        { item: 'Test', type: 'a', score: 60 },
-        { item: 'Test', type: 'b', score: 70 },
-        { item: 'Language', type: 'a', score: 70 },
-        { item: 'Language', type: 'b', score: 50 },
-        { item: 'Technology', type: 'a', score: 50 },
-        { item: 'Technology', type: 'b', score: 40 },
-        { item: 'Support', type: 'a', score: 30 },
-        { item: 'Support', type: 'b', score: 40 },
-        { item: 'Sales', type: 'a', score: 60 },
-        { item: 'Sales', type: 'b', score: 40 },
-        { item: 'UX', type: 'a', score: 50 },
-        { item: 'UX', type: 'b', score: 60 },
+        { item: '兴奋', type: '情感分布', score: 70 },
+        { item: '愤怒', type: '情感分布', score: 60 },
+        { item: '平静', type: '情感分布', score: 50 },
+        { item: '恐惧', type: '情感分布', score: 40 },
+        { item: '厌恶', type: '情感分布', score: 60 },
+        { item: '悲伤', type: '情感分布', score: 70 },
+        { item: '快乐', type: '情感分布', score: 50 },
     ];
 
     // 声明可视化
-
     chart.coordinate({ type: 'polar' });
 
     chart

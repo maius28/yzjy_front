@@ -1,40 +1,131 @@
 <template>
-    
-  <a-table :columns="columns" :data-source="data">
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'name'">
-        <a>
-          {{ record.name }}
-        </a>
+  <div class="record-page">
+    <!-- 搜索区域 -->
+    <div class="search-area">
+      <a-form layout="inline">
+        <a-form-item label="编号">
+          <a-input v-model:value="searchForm.id" placeholder="请输入编号" allowClear />
+        </a-form-item>
+        <a-form-item label="姓名">
+          <a-input v-model:value="searchForm.name" placeholder="请输入姓名" allowClear />
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="handleSearch">
+            <template #icon><search-outlined /></template>
+            搜索
+          </a-button>
+          <a-button style="margin-left: 8px" @click="resetSearch">
+            <template #icon><reload-outlined /></template>
+            重置
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </div>
+    <a-table :columns="columns" :data-source="data">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'name'">
+          <a>
+            {{ record.name }}
+          </a>
+        </template>
+        <template v-else-if="column.key === 'crimes'">
+          <span>
+            <a-tag v-for="tag in record.crimes" :key="tag"
+              :color="tag === 'loser' ? 'volcano' : tag.length > 3 ? 'red' : 'green'">
+              {{ tag.toUpperCase() }}
+            </a-tag>
+          </span>
+        </template>
+        <template v-else-if="column.key === 'action'">
+          <span>
+            <a-button type="link" @click="goToDetection(record.id)">检测</a-button>
+            <a-divider type="vertical" />
+            <a-button type="link" @click="goToRecord(record.id)">长期跟踪</a-button>
+            <a-divider type="vertical" />
+            <a-button type="link" @click="showDialogue(record)">语音解析</a-button>
+          </span>
+        </template>
       </template>
-      <template v-else-if="column.key === 'crimes'">
-        <span>
-          <a-tag
-            v-for="tag in record.crimes"
-            :key="tag"
-            :color="tag === 'loser' ? 'volcano' : tag.length > 3 ? 'red' : 'green'"
-          >
-            {{ tag.toUpperCase() }}
-          </a-tag>
-        </span>
-      </template>
-      <template v-else-if="column.key === 'action'">
-        <span>
-          <a-button type="link" @click="goToDetection(record.id)">检测</a-button>
-        </span>
-      </template>
-    </template>
-  </a-table>
+    </a-table>
+
+    <!-- 语音对话抽屉 -->
+    <a-drawer title="语音对话" placement="right" :width="800" :visible="dialogueVisible" @close="closeDialogue">
+      <dialogue-component v-if="dialogueVisible" :person-info="currentPerson" @close="closeDialogue" />
+    </a-drawer>
+  </div>
 </template>
+
 <script lang="ts" setup>
-import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router';
+import { ref, reactive } from 'vue';
+import DialogueComponent from '@/views/dialogue/index.vue';
+import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 
 const router = useRouter();
+const dialogueVisible = ref(false);
+const currentPerson = ref<any>(null);
+const loading = ref(false)
 
 const goToDetection = (id: string) => {
-  router.push(`/monitoring/detection/${id}`);
+  router.push(`/detection/${id}`);
 };
+
+const goToRecord = (id: string) => {
+  router.push({
+    path: '/tracking',
+    query: { id }
+  });
+};
+
+const showDialogue = (record: any) => {
+  currentPerson.value = record;
+  dialogueVisible.value = true;
+};
+
+const closeDialogue = () => {
+  dialogueVisible.value = false;
+  currentPerson.value = null;
+};
+
+// 搜索表单
+const searchForm = reactive({
+  id: '',
+  name: ''
+})
+
+// 分页配置
+const pagination = reactive({
+  current: 1,
+  pageSize: 10,
+  total: 100,
+  showSizeChanger: true,
+  showQuickJumper: true,
+})
+
+// 搜索处理
+const handleSearch = () => {
+  loading.value = true
+  // 这里添加实际的搜索逻辑
+  setTimeout(() => {
+    loading.value = false
+    message.success('搜索完成')
+  }, 500)
+}
+
+// 重置搜索
+const resetSearch = () => {
+  searchForm.id = ''
+  searchForm.name = ''
+  handleSearch()
+}
+
+// 表格变化处理
+const handleTableChange = (pag: any) => {
+  pagination.current = pag.current
+  pagination.pageSize = pag.pageSize
+  handleSearch()
+}
 
 const columns = [
   {
@@ -133,3 +224,17 @@ const data = [
 ];
 </script>
 
+<style scoped>
+.record-page {
+  padding: 24px;
+  /* background: #f8faff; */
+}
+
+.search-area {
+  margin-bottom: 24px;
+}
+
+:deep(.ant-form-item) {
+  margin-bottom: 16px;
+}
+</style>
