@@ -1,43 +1,71 @@
 <template>
-  <div class="record-page">
-      <!-- 搜索区域 -->
-      <div class="search-area">
-        <a-form layout="inline">
-          <a-form-item label="编号">
-            <a-input v-model:value="searchForm.id" placeholder="请输入编号" allowClear />
-          </a-form-item>
-          <a-form-item label="姓名">
-            <a-input v-model:value="searchForm.name" placeholder="请输入姓名" allowClear />
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="handleSearch">
-              <template #icon><search-outlined /></template>
-              搜索
-            </a-button>
-            <a-button style="margin-left: 8px" @click="resetSearch">
-              <template #icon><reload-outlined /></template>
-              重置
-            </a-button>
-          </a-form-item>
-        </a-form>
-      </div>
+  <a-card  class="statistic">
+    <a-row :gutter="16"> <!-- 设置列间距 -->
+      <a-col span="4"> <!-- 响应式布局 -->
+        <a-statistic title="检测次数" :value="6666" :value-style="{ color: '#3f8600' }" style="margin-right: 50px">
+          <!-- <template #prefix>
+              <arrow-up-outlined />
+            </template> -->
+        </a-statistic>
+      </a-col>
+      <a-col span="4">
+        <a-statistic title="异常次数" :value="50" :value-style="{ color: '#cf1322' }" style="margin-right: 50px">
+          <!-- <template #prefix>
+              <arrow-up-outlined />
+            </template> -->
+        </a-statistic>
+      </a-col>
+      <a-col span="4">
+        <a-statistic title="总人数" :value="800" style="margin-right: 50px">
+          <!-- <template #prefix>
+              <arrow-up-outlined />
+            </template> -->
+        </a-statistic>
+      </a-col>
+      <a-col span="4">
+        <a-statistic title="检测人员数" :value="500">
+        </a-statistic>
+      </a-col>
+      <a-col span="4"> <a-statistic title="出现异常人员数" :value="100"></a-statistic></a-col>
 
-      <!-- 表格区域 -->
-      <a-table
-        :columns="columns"
-        :data-source="tableData"
-        :loading="loading"
-        :pagination="pagination"
-        @change="handleTableChange"
-      >
-      
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'status'">
-            <a-tag :color="record.status === '异常' ? 'red' : 'green'">
-              {{ record.status }}
-            </a-tag>
-          </template>
-          <template v-else-if="column.key === 'crimes'">
+      <a-col span="4"><a-statistic title="待沟通人员数" :value="80" style="margin-right: 50px"></a-statistic></a-col>
+    </a-row>
+  </a-card>
+
+  <div class="record-page">
+    <!-- 搜索区域 -->
+    <div class="search-area">
+      <a-form layout="inline">
+        <a-form-item label="编号">
+          <a-input v-model:value="searchForm.id" placeholder="请输入编号" allowClear />
+        </a-form-item>
+        <a-form-item label="姓名">
+          <a-input v-model:value="searchForm.name" placeholder="请输入姓名" allowClear />
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="handleSearch">
+            <template #icon><search-outlined /></template>
+            搜索
+          </a-button>
+          <a-button style="margin-left: 8px" @click="resetSearch">
+            <template #icon><reload-outlined /></template>
+            重置
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </div>
+
+    <!-- 表格区域 -->
+    <a-table :columns="columns" :data-source="tableData" :loading="loading" :pagination="pagination"
+      @change="handleTableChange">
+
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'status'">
+          <a-tag :color="record.status === '异常' ? 'red' : 'green'">
+            {{ record.status }}
+          </a-tag>
+        </template>
+        <template v-else-if="column.key === 'crimes'">
           <span>
             <a-tag v-for="tag in record.crimes" :key="tag"
               :color="tag === 'loser' ? 'volcano' : tag.length > 3 ? 'red' : 'green'">
@@ -45,22 +73,34 @@
             </a-tag>
           </span>
         </template>
-          <template v-if="column.key === 'action'">
-            <a @click="goToDetection(record)">查看详情</a>
-          </template>
+        <template v-if="column.key === 'action'">
+          <a @click="goToDetection(record)">查看详情</a>
+          <a-divider type="vertical" />
+          <a @click="showDialogue(record)">语音识别</a>
+          <a-divider type="vertical" />
+          <a @click="showDialogue(record)">下载报告</a>
         </template>
-      </a-table>
+      </template>
+    </a-table>
   </div>
+
+  <!-- 语音对话抽屉 -->
+  <a-drawer title="语音对话" placement="right" :width="1200" :visible="dialogueVisible" @close="closeDialogue">
+    <dialogue-component v-if="dialogueVisible" :person-info="currentPerson" @close="closeDialogue" />
+  </a-drawer>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
+import { SearchOutlined, ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
+import DialogueComponent from '@/views/dialogue/index.vue';
 
 const router = useRouter()
 const loading = ref(false)
+const dialogueVisible = ref(false);
+const currentPerson = ref<any>(null);
 
 // 搜索表单
 const searchForm = reactive({
@@ -113,31 +153,28 @@ const columns = [
     title: '检测时间',
     dataIndex: 'detectionTime',
     key: 'detectionTime',
-    width: 180,
   },
   {
     title: '情感状态',
     dataIndex: 'status',
     key: 'status',
-    width: 100,
   },
   {
     title: '检测分数',
     dataIndex: 'score',
     key: 'score',
-    width: 100,
+
   },
   {
-    title: 'AI指导',
+    title: 'AI建议',
     dataIndex: 'needHelp',
     key: 'needHelp',
-    width: 100,
+
   },
   {
     title: '操作',
     key: 'action',
     fixed: 'right',
-    width: 100,
   },
 ]
 
@@ -207,7 +244,17 @@ const handleTableChange = (pag: any) => {
 
 // 查看详情
 const goToDetection = (id: string) => {
-  router.push(`/detection/${id}`);
+  router.push(`/detection/${id}?detecting=true`);
+};
+
+const showDialogue = (record: any) => {
+  currentPerson.value = record;
+  dialogueVisible.value = true;
+};
+
+const closeDialogue = () => {
+  dialogueVisible.value = false;
+  currentPerson.value = null;
 };
 </script>
 
@@ -221,4 +268,9 @@ const goToDetection = (id: string) => {
   margin-bottom: 24px;
 }
 
-</style> 
+.statistic {
+  /* background-color: rgba(175, 167, 167, 0.747); */
+  border-radius: 0%;
+
+}
+</style>

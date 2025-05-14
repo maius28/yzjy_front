@@ -32,9 +32,9 @@ watch(() => route.path, (path) => {
           mode="horizontal"
           class="menu"
         >
-          <a-menu-item key="1">
+          <!-- <a-menu-item key="1">
             <router-link to="/">总览</router-link>
-          </a-menu-item>
+          </a-menu-item> -->
           <a-menu-item key="2">
             <router-link to="/monitoring">人员监控</router-link>
           </a-menu-item>

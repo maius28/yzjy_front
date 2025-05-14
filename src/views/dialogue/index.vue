@@ -1,63 +1,39 @@
 <template>
-  <div class="dialogue-container">
-    <div class="dialogue-header">
-      <div class="person-info">
-        <span>姓名：{{ personInfo?.name }}</span>
-        <span>编号：{{ personInfo?.id }}</span>
-      </div>
-    </div>
-    
-    <div class="dialogue-content">
-      <DiaList ref="diaListRef" :messages="messages"/>
-      <div style="padding-left: 5px;">
-        <el-form label-position="top">
-          <el-form-item ref="audioRefs" :key="index" :label="audio.label" v-for="(audio, index) in audioList">
-            <WaveSurfer :audio-url=audio.url :regions="messages"
-            @play="handlePlay(index)"
-            @region-in="handleRegionIn"
+  <div id="dialogue" class="card">
+    <DiaList ref="diaListRef" :messages="messages" />
+    <div style="padding-left: 5px;">
+      <el-form label-position="top">
+        <el-form-item ref="audioRefs" :key="index" :label="audio.label" v-for="(audio, index) in audioList">
+          <WaveSurfer :audio-url=audio.url :regions="messages" @play="handlePlay(index)" @region-in="handleRegionIn"
             :ref="(el) => setWaveSurferRef(el as InstanceType<typeof WaveSurfer>, index)" />
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
-
-    <div class="dialogue-footer">
-      <a-button type="primary" @click="$emit('close')">关闭</a-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, computed, toRef, defineProps, defineEmits } from 'vue'
+<script setup lang="tsx">
+import { ref, computed, toRef } from 'vue'
 import DiaList from './components/DiaList.vue';
 import WaveSurfer from '@/components/WaveSurfer.vue';
 import { isNumber } from '@/utils/is';
-import{FormItemInstance}from "element-plus";
+import { FormItemInstance } from "element-plus";
 
-const props = defineProps({
-  personInfo: {
-    type: Object,
-    required: true
+const parseTimeToSeconds = (timeStr: string | number): number => {
+  if (isNumber(timeStr)) return timeStr;
+
+  const times = timeStr.split(':');
+  const timeUnitLen = times.length
+  let seconds = 0;
+  for (let idx = timeUnitLen - 1; idx >= 0; idx--) {
+    const time = times[idx];
+    seconds += Number(time) * Math.pow(60, timeUnitLen - idx - 1);
   }
-});
 
-defineEmits(['close']);
-
-const parseTimeToSeconds=(timeStr: string|number): number=> {
-  if(isNumber(timeStr))return timeStr;
-
-  const times= timeStr.split(':');
-  const timeUnitLen=times.length
-  let seconds=0;
-  for(let idx=  timeUnitLen-1; idx>=0; idx--){
-    const time=times[idx];
-    seconds+=Number(time)*Math.pow(60,timeUnitLen-idx-1);
-  }
-  
   return seconds;
 }
 
-const messages=ref([
+const messages = ref([
   { "start": "00:21.910", "end": "00:27.150", "speaker": "男", "text": "如果你不爱我 就把我的心还我" },
   { "start": "00:27.150", "end": "00:32.329", "speaker": "男", "text": "你用爱换走青春 我还留下了什么" },
   { "start": "00:32.329", "end": "00:37.990", "speaker": "男", "text": "如果你还爱我 就什么话都别说" },
@@ -113,12 +89,12 @@ const messages=ref([
   { "start": "03:43.280", "end": "03:48.490", "speaker": "男", "text": "都把爱情想得太美现实太诱惑" },
   { "start": "03:48.490", "end": "03:53.800", "speaker": "女", "text": "到底为什么 让你更难过" },
   { "start": "03:53.800", "end": "03:59.000", "speaker": "男", "text": "这样爱你除了安慰还能怎么做" }
-].map(item=>({...item,start:parseTimeToSeconds(item.start),end:parseTimeToSeconds(item.end),isSelf:item.speaker=="男"})));
+].map(item => ({ ...item, start: parseTimeToSeconds(item.start), end: parseTimeToSeconds(item.end), isSelf: item.speaker == "男" })));
 
-const audioList=[
-  {label:"人声",url:"/videos/全是爱 人声.mp3"},
-  {label:"男声",url:"/videos/全是爱 人声.mp3"},
-  {label:"女声",url:"/videos/全是爱 人声.mp3"},
+const audioList = [
+  { label: "人声", url: "/videos/全是爱 人声.mp3" },
+  { label: "男声", url: "/videos/全是爱 人声.mp3" },
+  { label: "女声", url: "/videos/全是爱 人声.mp3" },
 ]
 
 const waveSurferRefs = ref<(InstanceType<typeof WaveSurfer> | null)[]>([]);
@@ -126,7 +102,7 @@ const setWaveSurferRef = (el: InstanceType<typeof WaveSurfer>, index: number) =>
   waveSurferRefs.value[index] = el
 }
 //排他性暂停播放
-const handlePlay=(index)=>{
+const handlePlay = (index) => {
   // 暂停其他音频
   waveSurferRefs.value.forEach((ws, i) => {
     if (i !== index && ws) {
@@ -135,41 +111,22 @@ const handlePlay=(index)=>{
   })
 }
 
-const diaListRef=ref<InstanceType<typeof diaListRef>>();
+const diaListRef = ref<InstanceType<typeof diaListRef>>();
 
-const handleRegionIn=(region:{start:number,end:number})=>{
+const handleRegionIn = (region: { start: number, end: number }) => {
   diaListRef.value.scrollToMsg(region.start);
-  
+
 }
 
 </script>
-
-<style scoped>
-.dialogue-container {
+<style scoped lang="scss">
+#dialogue {
+  display: flex;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-}
 
-.dialogue-header {
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-}
+  &>div {
+    flex: 1;
 
-.person-info {
-  display: flex;
-  gap: 24px;
-}
-
-.dialogue-content {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-}
-
-.dialogue-footer {
-  padding: 16px;
-  border-top: 1px solid #f0f0f0;
-  text-align: right;
+  }
 }
 </style>

@@ -17,8 +17,9 @@ function onClick() {
 function renderRadarChart(container) {
     const chart = new Chart({
         container,
-        height: 400,
-        autoFit: true,
+        height: 200,
+        width: 240,
+        autoFit: false,
     });
 
     chart
@@ -57,7 +58,7 @@ function updateBarChart(chart) {
 </template>
 
 <style scoped>
-.graph-container {
+/* .graph-container {
     width: 100%;
     height: 100%;
 }
@@ -65,5 +66,5 @@ function updateBarChart(chart) {
 .graph-content {
     width: 100%;
     height: 400px;
-}
+} */
 </style>

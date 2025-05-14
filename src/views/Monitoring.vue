@@ -40,31 +40,21 @@
           <span>
             <a-button type="link" @click="goToDetection(record.id)">检测</a-button>
             <a-divider type="vertical" />
-            <a-button type="link" @click="goToRecord(record.id)">长期跟踪</a-button>
-            <a-divider type="vertical" />
-            <a-button type="link" @click="showDialogue(record)">语音解析</a-button>
+            <a @click="goToRecord(record.id)">状态追踪</a>
           </span>
         </template>
       </template>
     </a-table>
-
-    <!-- 语音对话抽屉 -->
-    <a-drawer title="语音对话" placement="right" :width="800" :visible="dialogueVisible" @close="closeDialogue">
-      <dialogue-component v-if="dialogueVisible" :person-info="currentPerson" @close="closeDialogue" />
-    </a-drawer>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 import { ref, reactive } from 'vue';
-import DialogueComponent from '@/views/dialogue/index.vue';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 
 const router = useRouter();
-const dialogueVisible = ref(false);
-const currentPerson = ref<any>(null);
 const loading = ref(false)
 
 const goToDetection = (id: string) => {
@@ -76,16 +66,6 @@ const goToRecord = (id: string) => {
     path: '/tracking',
     query: { id }
   });
-};
-
-const showDialogue = (record: any) => {
-  currentPerson.value = record;
-  dialogueVisible.value = true;
-};
-
-const closeDialogue = () => {
-  dialogueVisible.value = false;
-  currentPerson.value = null;
 };
 
 // 搜索表单

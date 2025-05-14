@@ -18,18 +18,19 @@ function renderRadarChart(container) {
     const chart = new Chart({
         container,
         height: 400,
+        width:400,
         autoFit: false,
     });
 
     // 准备数据
     const data = [
-        { item: '兴奋', type: '情感分布', score: 70 },
-        { item: '愤怒', type: '情感分布', score: 60 },
-        { item: '平静', type: '情感分布', score: 50 },
-        { item: '恐惧', type: '情感分布', score: 40 },
-        { item: '厌恶', type: '情感分布', score: 60 },
-        { item: '悲伤', type: '情感分布', score: 70 },
-        { item: '快乐', type: '情感分布', score: 50 },
+        { item: '兴奋', type: '出现频次', score: 3 },
+        { item: '愤怒', type: '出现频次', score: 6 },
+        { item: '平静', type: '出现频次', score: 5 },
+        { item: '恐惧', type: '出现频次', score: 4 },
+        { item: '厌恶', type: '出现频次', score: 6 },
+        { item: '悲伤', type: '出现频次', score: 7 },
+        { item: '快乐', type: '出现频次', score: 8 },
     ];
 
     // 声明可视化
@@ -38,7 +39,7 @@ function renderRadarChart(container) {
     chart
         .data(data)
         .scale('x', { padding: 0.5, align: 0 })
-        .scale('y', { tickCount: 5, domainMax: 80 })
+        .scale('y', { tickCount: 5, domainMax: 10 })
         .axis('x', {
             grid: true,
             gridLineWidth: 1,
