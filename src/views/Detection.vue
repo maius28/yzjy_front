@@ -35,7 +35,7 @@
               <a-descriptions title="姓名：张三">
                 <a-descriptions-item span="2"><img src="@/assets/keyFrameSample.jpg"
                     class="keyframe-img" /></a-descriptions-item>
-                <a-descriptions-item span="1"><a-statistic title="情感状态/分数" :value="'异常/80'" style="margin-right: 50px;"
+                <a-descriptions-item span="1"><a-statistic title="情感状态" :value="'异常'" style="margin-right: 50px;"
                     :value-style="{ color: '#cf1322' }" /></a-descriptions-item>
                 <a-descriptions-item label="性别">男</a-descriptions-item>
                 <a-descriptions-item label="年龄">35</a-descriptions-item>
@@ -301,6 +301,7 @@ const closeDialogue = () => {
 if (route.query.detecting === 'true') {
   detecting.value = true;
   detectionResult.value = reportContent
+  videoUrl.value = '@/assets/sample.mp4' // 替换为实际视频URL
 }
 </script>
 

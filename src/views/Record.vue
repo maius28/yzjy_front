@@ -166,12 +166,6 @@ const columns = [
 
   },
   {
-    title: 'AI建议',
-    dataIndex: 'needHelp',
-    key: 'needHelp',
-
-  },
-  {
     title: '操作',
     key: 'action',
     fixed: 'right',
@@ -201,7 +195,7 @@ const tableData = ref([
     detectionTime: '2024-01-02 14:30',
     status: '异常',
     score: 45,
-    needHelp: "情绪异常，请尽快进行人工介入处理",
+    needHelp: "情绪异常，请尽快进行人工介入",
     prison: '第xxx监区xxx房间',
     enterDate: '2012-01-31',
     crimes: ['故意伤害罪'],
