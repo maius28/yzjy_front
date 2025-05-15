@@ -6,7 +6,7 @@
           <a-descriptions title="姓名：张三">
             <a-descriptions-item span="2"><img src="@/assets/keyFrameSample.jpg"
                 class="keyframe-img" /></a-descriptions-item>
-            <a-descriptions-item span="1"><a-statistic title="情感状态/分数" :value="'异常/80'" style="margin-right: 50px;"
+            <a-descriptions-item span="1"><a-statistic title="情感状态" :value="'异常'" style="margin-right: 50px;"
                 :value-style="{ color: '#cf1322' }" /></a-descriptions-item>
             <a-descriptions-item label="性别">男</a-descriptions-item>
             <a-descriptions-item label="年龄">35</a-descriptions-item>
@@ -52,15 +52,14 @@
         </a-card>
       </a-col>
     </a-row>
-    <a-row>
-      <!-- 上半部分：折线图 -->
+    <!-- <a-row>
+
       <a-col :span="24">
-        <a-card title="历史检测分数跟踪">
-          <!-- <ColorLineChart /> -->
-           <BarChart />
+        <a-card title="历史检测跟踪">
+            <PieChart />
         </a-card>
       </a-col>
-    </a-row>
+    </a-row> -->
 
     <!-- 下半部分：检测记录表格 -->
     <a-row style="margin-top: 16px">
@@ -89,6 +88,7 @@ import { ref, reactive, onMounted } from 'vue'
 import BarChart from '@/components/BarChart.vue'
 import RelationGraph from '@/components/RelationGraph.vue'
 import GaugeChart from '@/components/GaugeChart.vue'
+// import PieChart from '@/components/PieChart.vue'
 import WordCloudChart from '@/components/WordCloudChart.vue'
 import { useRoute, useRouter } from 'vue-router'
 

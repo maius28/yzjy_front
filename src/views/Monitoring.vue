@@ -55,6 +55,8 @@ import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 
 const router = useRouter();
+const dialogueVisible = ref(false);
+const currentPerson = ref<any>(null);
 const loading = ref(false)
 
 const goToDetection = (id: string) => {

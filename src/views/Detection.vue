@@ -79,7 +79,8 @@
           <p v-if="!detectionResult">暂无检测结果</p>
           <div v-else>
             <!-- 折线图G2容器 -->
-            <ColorLineChart />
+            <!-- <ColorLineChart /> -->
+             <GroupBarChart />
             <div class="keyframes-section">
               <div class="keyframes-title">关键帧</div>
               <div class="keyframes-list">
@@ -134,7 +135,8 @@
 
 <script lang="ts" setup>
 import Radar from '@/components/Radar.vue'
-import ColorLineChart from '@/components/ColorLineChart.vue'
+// import ColorLineChart from '@/components/ColorLineChart.vue'
+import GroupBarChart from '@/components/GroupBarChart.vue'
 import DialogueComponent from '@/views/dialogue/index.vue'
 import { ref } from 'vue'
 import { UploadOutlined, PlayCircleOutlined, EditOutlined, DownloadOutlined, SoundOutlined } from '@ant-design/icons-vue'
