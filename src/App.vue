@@ -24,7 +24,7 @@ watch(() => route.path, (path) => {
       <div class="header-content">
         <a href="/" class="logo-container">
           <img src="./assets/logo.svg" class="logo" alt="logo">
-          <span class="title">邑州监狱</span>
+          <span class="title">邑州监狱多模态情感智能分析</span>
         </a>
         <a-menu
           v-model:selectedKeys="selectedKeys"
@@ -36,7 +36,7 @@ watch(() => route.path, (path) => {
             <router-link to="/">总览</router-link>
           </a-menu-item> -->
           <a-menu-item key="2">
-            <router-link to="/monitoring">人员监控</router-link>
+            <router-link to="/monitoring">人员管理</router-link>
           </a-menu-item>
           <a-menu-item key="3">
             <router-link to="/record">检测记录</router-link>

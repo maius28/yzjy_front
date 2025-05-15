@@ -1,16 +1,16 @@
 <template>
-  <div class="record-page">
+<div class="record-page">
     <!-- 搜索区域 -->
     <div class="search-area">
-      <a-form layout="inline">
-        <a-form-item label="编号">
+      <a-form layout="horizontal" class="search-form">
+        <a-form-item label="编号" >
           <a-input v-model:value="searchForm.id" placeholder="请输入编号" allowClear />
         </a-form-item>
-        <a-form-item label="姓名">
+        <a-form-item label="姓名" style="margin-left: 8px">
           <a-input v-model:value="searchForm.name" placeholder="请输入姓名" allowClear />
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" @click="handleSearch">
+          <a-button type="primary" @click="handleSearch" style="margin-left: 8px;">
             <template #icon><search-outlined /></template>
             搜索
           </a-button>
@@ -19,6 +19,17 @@
             重置
           </a-button>
         </a-form-item>
+        <div class="button-group">
+          <a-button type="primary" style="margin-left: 8px">
+            <template #icon><ImportOutlined /></template>
+            导入
+          </a-button>
+          <a-button type="primary" style="margin-left: 8px">
+            <template #icon><DownloadOutlined /></template>
+            导出
+          </a-button>
+
+        </div>
       </a-form>
     </div>
     <a-table :columns="columns" :data-source="data">
@@ -51,7 +62,7 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 import { ref, reactive } from 'vue';
-import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
+import { SearchOutlined, ReloadOutlined, DownloadOutlined, ImportOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 
 const router = useRouter();
@@ -161,6 +172,22 @@ const columns = [
     dataIndex: 'crimes',
   },
   {
+    title: '检测分数',
+    dataIndex: 'score',
+    key: 'score',
+  },
+  {
+    title: '检测次数',
+    dataIndex: 'detectionCount',
+    key: 'detectionCount',
+  },
+  {
+    title: 'AI建议',
+    dataIndex: 'needHelp',
+    key: 'needHelp',
+
+  },
+  {
     title: '操作',
     key: 'action',
   },
@@ -178,6 +205,9 @@ const data = [
     prison: '第xxx监区xxx房间',
     enterDate: '2012-01-31',
     crimes: ['故意伤害罪', '抢劫罪'],
+    needHelp: "人员状态稳定",
+    score : 86,
+    detectionCount: 5,
   },
   {
     id: '2',
@@ -190,6 +220,9 @@ const data = [
     prison: '第xxx监区xxx房间',
     enterDate: '2015-06-15',
     crimes: ['盗窃罪'],
+    needHelp: "情绪不稳定，请重点关注",
+    score : 45,
+    detectionCount: 3,
   },
   {
     id: '3',
@@ -202,6 +235,9 @@ const data = [
     prison: '第xxx监区xxx房间',
     enterDate: '2018-03-20',
     crimes: ['诈骗罪'],
+    needHelp: "人员状态稳定",
+    score : 92,
+    detectionCount: 8,
   },
 ];
 </script>
@@ -218,5 +254,25 @@ const data = [
 
 :deep(.ant-form-item) {
   margin-bottom: 16px;
+}
+
+.search-area {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 </style>
